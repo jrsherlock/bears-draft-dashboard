@@ -25,9 +25,9 @@ const AXES: Array<keyof CombineRecord["metrics"]> = [
  * Each axis is rendered with a label, the player's raw value, and an orange
  * percentile dot whose radial distance reflects their position-percentile.
  */
-export function CombineRadar({ combine, size = 280 }: Props) {
+export function CombineRadar({ combine, size = 360 }: Props) {
   // Generous outer padding so labels don't clip on the left/right axes.
-  const radius = size / 2 - 56;
+  const radius = size / 2 - 64;
   const cx = size / 2;
   const cy = size / 2;
   const axisCount = AXES.length;
@@ -62,6 +62,16 @@ export function CombineRadar({ combine, size = 280 }: Props) {
         role="img"
         aria-label="Combine athleticism radar chart"
       >
+        {/* Subtle radial glow behind the polygon */}
+        <defs>
+          <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(200,56,3,0.18)" />
+            <stop offset="70%" stopColor="rgba(200,56,3,0.04)" />
+            <stop offset="100%" stopColor="rgba(200,56,3,0)" />
+          </radialGradient>
+        </defs>
+        <circle cx={cx} cy={cy} r={radius} fill="url(#radarGlow)" />
+
         {/* Concentric rings (25 / 50 / 75 / 100 percentile contours) */}
         {ringSteps.map((step) => (
           <polygon
@@ -71,8 +81,12 @@ export function CombineRadar({ combine, size = 280 }: Props) {
               return `${x},${y}`;
             }).join(" ")}
             fill="none"
-            stroke="rgba(244,237,218,0.08)"
-            strokeWidth={step === 1 ? 1 : 0.6}
+            stroke={
+              step === 1
+                ? "rgba(244,237,218,0.32)"
+                : "rgba(244,237,218,0.16)"
+            }
+            strokeWidth={step === 1 ? 1.2 : 0.8}
           />
         ))}
 
@@ -86,8 +100,8 @@ export function CombineRadar({ combine, size = 280 }: Props) {
               y1={cy}
               x2={x}
               y2={y}
-              stroke="rgba(244,237,218,0.10)"
-              strokeWidth={0.8}
+              stroke="rgba(244,237,218,0.20)"
+              strokeWidth={1}
             />
           );
         })}
@@ -100,16 +114,16 @@ export function CombineRadar({ combine, size = 280 }: Props) {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformOrigin: `${cx}px ${cy}px` }}
             points={polygon}
-            fill="rgba(200,56,3,0.22)"
-            stroke="var(--color-orange-500)"
-            strokeWidth={1.5}
+            fill="rgba(200,56,3,0.40)"
+            stroke="var(--color-orange-400)"
+            strokeWidth={2}
           />
         )}
 
         {/* Axis dots + labels */}
         {AXES.map((axis, i) => {
           const m = combine.metrics[axis];
-          const [labelX, labelY] = point(i, 1.18);
+          const [labelX, labelY] = point(i, 1.22);
           if (!m) {
             return (
               <g key={axis}>
@@ -119,19 +133,20 @@ export function CombineRadar({ combine, size = 280 }: Props) {
                   textAnchor={anchorFor(i, axisCount)}
                   dominantBaseline="middle"
                   className="mono"
-                  fontSize={9}
-                  fill="rgba(244,237,218,0.35)"
-                  letterSpacing="0.08em"
+                  fontSize={11}
+                  fill="rgba(244,237,218,0.5)"
+                  letterSpacing="0.10em"
+                  fontWeight={500}
                 >
                   {labelLookup[axis]}
                 </text>
                 <text
                   x={labelX}
-                  y={labelY + 11}
+                  y={labelY + 14}
                   textAnchor={anchorFor(i, axisCount)}
                   dominantBaseline="middle"
-                  fontSize={10}
-                  fill="rgba(244,237,218,0.3)"
+                  fontSize={13}
+                  fill="rgba(244,237,218,0.35)"
                 >
                   —
                 </text>
@@ -141,13 +156,25 @@ export function CombineRadar({ combine, size = 280 }: Props) {
           const [dotX, dotY] = point(i, m.percentile);
           return (
             <g key={axis}>
+              {/* Glow halo on the dot */}
+              <motion.circle
+                initial={{ r: 0, opacity: 0 }}
+                animate={{ r: 12, opacity: 0.35 }}
+                transition={{ delay: 0.4 + i * 0.05, duration: 0.5 }}
+                cx={dotX}
+                cy={dotY}
+                fill="var(--color-orange-500)"
+                style={{ filter: "blur(6px)" }}
+              />
               <motion.circle
                 initial={{ r: 0 }}
-                animate={{ r: 4 }}
+                animate={{ r: 5 }}
                 transition={{ delay: 0.4 + i * 0.05, duration: 0.4 }}
                 cx={dotX}
                 cy={dotY}
                 fill="var(--color-orange-400)"
+                stroke="var(--color-cream-50)"
+                strokeWidth={1.5}
               />
               <text
                 x={labelX}
@@ -155,18 +182,19 @@ export function CombineRadar({ combine, size = 280 }: Props) {
                 textAnchor={anchorFor(i, axisCount)}
                 dominantBaseline="middle"
                 className="mono"
-                fontSize={9}
-                fill="rgba(244,237,218,0.6)"
-                letterSpacing="0.08em"
+                fontSize={11}
+                fill="rgba(244,237,218,0.85)"
+                letterSpacing="0.10em"
+                fontWeight={500}
               >
                 {labelLookup[axis]}
               </text>
               <text
                 x={labelX}
-                y={labelY + 12}
+                y={labelY + 16}
                 textAnchor={anchorFor(i, axisCount)}
                 dominantBaseline="middle"
-                fontSize={11}
+                fontSize={14}
                 fontWeight={700}
                 fill="var(--color-cream-50)"
                 style={{ fontVariantNumeric: "tabular-nums" }}
@@ -175,14 +203,16 @@ export function CombineRadar({ combine, size = 280 }: Props) {
               </text>
               <text
                 x={labelX}
-                y={labelY + 23}
+                y={labelY + 30}
                 textAnchor={anchorFor(i, axisCount)}
                 dominantBaseline="middle"
                 className="mono"
-                fontSize={9}
+                fontSize={10}
                 fill="var(--color-orange-400)"
+                fontWeight={600}
+                letterSpacing="0.08em"
               >
-                {Math.round(m.percentile * 100)}%
+                {Math.round(m.percentile * 100)} PCT
               </text>
             </g>
           );

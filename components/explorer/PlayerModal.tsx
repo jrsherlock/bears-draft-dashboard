@@ -206,23 +206,34 @@ function PlayerModalBody({
 
         {/* Combine athleticism radar */}
         {pick.combine && Object.keys(pick.combine.metrics).length > 0 && (
-          <div className="border-b rule-line p-6 lg:p-8">
-            <div className="mb-4 flex items-baseline justify-between gap-3">
-              <div>
-                <div className="mono text-[10px] uppercase tracking-[0.3em] text-cream-300/60">
-                  Combine athleticism
+          <div className="border-b rule-line bg-navy-800/40 p-6 lg:p-8">
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-5 flex items-end justify-between gap-3 border-b rule-line-strong pb-3">
+                <div>
+                  <div className="mono inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.4em] text-orange-400">
+                    <span className="h-px w-6 bg-orange-500" />
+                    Combine athleticism
+                  </div>
+                  <div className="display mt-2 text-2xl uppercase tracking-wide text-cream-50">
+                    Athletic Profile
+                  </div>
+                  <div className="editorial mt-1 text-sm text-cream-200/70">
+                    Six-axis percentile within the{" "}
+                    <span className="text-orange-300">
+                      {pick.combine.position_group}
+                    </span>{" "}
+                    position group at the NFL Combine.
+                  </div>
                 </div>
-                <div className="editorial mt-1 text-sm text-cream-200/70">
-                  Six-axis percentile within the {pick.combine.position_group}{" "}
-                  position group.
+                <div className="mono shrink-0 text-right text-[10px] uppercase tracking-[0.25em] text-cream-300/55">
+                  <div>Source</div>
+                  <div className="text-cream-200">NFL Combine</div>
                 </div>
               </div>
-              <div className="mono text-[10px] uppercase tracking-[0.25em] text-cream-300/50">
-                Source · NFL Combine
+
+              <div className="flex justify-center py-2">
+                <CombineRadar combine={pick.combine} size={420} />
               </div>
-            </div>
-            <div className="flex justify-center">
-              <CombineRadar combine={pick.combine} size={320} />
             </div>
           </div>
         )}
