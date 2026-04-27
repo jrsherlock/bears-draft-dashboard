@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useExplorer, pickKey } from "./ExplorerContext";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CombineRadar } from "@/components/CombineRadar";
+import { Tip, type TipTerm } from "@/components/ui/Tip";
 import { cn, pfrUrl, formatStatNumber } from "@/lib/utils";
 import {
   hitColor,
@@ -113,14 +114,20 @@ function PlayerModalBody({
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <span className="chip chip-hot">{pick.position ?? "?"}</span>
-              {pick.hof && <span className="chip chip-hof">Hall of Fame</span>}
+              {pick.hof && (
+                <span className="chip chip-hof">
+                  <Tip term="HOF" side="bottom">Hall of Fame</Tip>
+                </span>
+              )}
               {(pick.allpro ?? 0) > 0 && (
                 <span className="chip chip-hot">
-                  {pick.allpro}× All-Pro
+                  {pick.allpro}× <Tip term="ALLPRO" side="bottom">All-Pro</Tip>
                 </span>
               )}
               {(pick.probowls ?? 0) > 0 && (
-                <span className="chip">{pick.probowls}× Pro Bowl</span>
+                <span className="chip">
+                  {pick.probowls}× <Tip term="PROBOWL" side="bottom">Pro Bowl</Tip>
+                </span>
               )}
               <span className="chip">{pick.era}</span>
             </div>
@@ -214,10 +221,11 @@ function PlayerModalBody({
 
         {/* Stat blocks */}
         <div className="grid grid-cols-2 divide-x rule-line border-b rule-line md:grid-cols-4">
-          <Headline label="Career AV" value={pick.car_av ?? pick.w_av} />
-          <Headline label="Games" value={pick.games} />
+          <Headline term="AV" label="Career AV" value={pick.car_av ?? pick.w_av} />
+          <Headline term="GP" label="Games" value={pick.games} />
           <Headline label="Seasons started" value={pick.seasons_started} />
           <Headline
+            term={pick.hof ? "HOF" : "PROBOWL"}
             label={pick.hof ? "Hall of Fame" : "Pro Bowls"}
             value={pick.hof ? "★" : pick.probowls}
           />
@@ -306,16 +314,18 @@ function PlayerModalBody({
 }
 
 function Headline({
+  term,
   label,
   value,
 }: {
+  term?: TipTerm;
   label: string;
   value: number | string | null | undefined;
 }) {
   return (
     <div className="px-5 py-6 text-center">
       <div className="mono text-[10px] uppercase tracking-[0.3em] text-cream-300/60">
-        {label}
+        {term ? <Tip term={term}>{label}</Tip> : label}
       </div>
       <div className="display tabular mt-2 text-4xl text-cream-50 lg:text-5xl">
         {value == null || value === 0 ? "—" : value}

@@ -8,6 +8,7 @@ import { ActiveTimeline } from "@/components/ActiveTimeline";
 import { Dashboard } from "@/components/Dashboard";
 import { HitScorePanel } from "@/components/HitScorePanel";
 import { HitScoreHint } from "@/components/HitScoreHint";
+import { StickyNav } from "@/components/StickyNav";
 import { HitScoreProvider } from "@/lib/hit-score";
 import { loadMeta, loadPicks } from "@/lib/data";
 
@@ -17,6 +18,7 @@ export default async function Page() {
   return (
     <HitScoreProvider latestSeason={meta.last_season}>
       <ExplorerProvider picks={picks}>
+        <StickyNav />
         <main className="relative">
           <Hero meta={meta} picks={picks} />
           <ExplorerSection picks={picks} />

@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { useExplorer } from "./ExplorerContext";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
+import { Tip } from "@/components/ui/Tip";
 import { hitColor, hitLabel, useHitScore } from "@/lib/hit-score";
 import type { DraftPick } from "@/lib/types";
 
@@ -75,18 +76,30 @@ export function CompareModal() {
               </div>
               <div className="space-y-5">
                 <Duel
-                  label="Career AV"
+                  label={<Tip term="AV">Career AV</Tip>}
                   a={a.car_av ?? a.w_av ?? 0}
                   b={b.car_av ?? b.w_av ?? 0}
                 />
-                <Duel label="Games played" a={a.games ?? 0} b={b.games ?? 0} />
+                <Duel
+                  label={<Tip term="GP">Games played</Tip>}
+                  a={a.games ?? 0}
+                  b={b.games ?? 0}
+                />
                 <Duel
                   label="Seasons started"
                   a={a.seasons_started ?? 0}
                   b={b.seasons_started ?? 0}
                 />
-                <Duel label="Pro Bowls" a={a.probowls ?? 0} b={b.probowls ?? 0} />
-                <Duel label="All-Pros" a={a.allpro ?? 0} b={b.allpro ?? 0} />
+                <Duel
+                  label={<Tip term="PROBOWL">Pro Bowls</Tip>}
+                  a={a.probowls ?? 0}
+                  b={b.probowls ?? 0}
+                />
+                <Duel
+                  label={<Tip term="ALLPRO">All-Pros</Tip>}
+                  a={a.allpro ?? 0}
+                  b={b.allpro ?? 0}
+                />
                 <Duel
                   label="Hit score"
                   a={scoreFn(a)}
@@ -189,7 +202,7 @@ function Duel({
   b,
   max,
 }: {
-  label: string;
+  label: React.ReactNode;
   a: number;
   b: number;
   max?: number;

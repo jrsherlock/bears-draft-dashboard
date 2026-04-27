@@ -16,6 +16,7 @@ import {
 import { useMemo } from "react";
 import type { DraftPick } from "@/lib/types";
 import { useHitScore } from "@/lib/hit-score";
+import { Tip } from "@/components/ui/Tip";
 
 type Props = { picks: DraftPick[] };
 
@@ -293,7 +294,7 @@ function PickRow({
       </div>
       <div className="text-right">
         <div className="mono text-[9px] uppercase tracking-[0.2em] text-cream-300/50">
-          AV
+          <Tip term="AV">AV</Tip>
         </div>
         <div className="display tabular text-lg text-cream-100">
           {p.car_av ?? p.w_av ?? "—"}

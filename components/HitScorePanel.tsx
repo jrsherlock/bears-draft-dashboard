@@ -12,6 +12,7 @@ import {
 } from "@/lib/hit-score";
 import type { DraftPick } from "@/lib/types";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { Tip } from "./ui/Tip";
 
 type Props = {
   picks: DraftPick[];
@@ -103,12 +104,17 @@ export function HitScorePanel({ picks }: Props) {
                   <span className="mono text-orange-400">100</span> that lets
                   you scan an entire era of draft picks at a glance. It
                   combines{" "}
-                  <span className="text-orange-300">career production</span>,{" "}
-                  <span className="text-orange-300">accolades</span>, and{" "}
+                  <span className="text-orange-300">
+                    <Tip term="AV" side="bottom">career AV</Tip>
+                  </span>
+                  ,{" "}
+                  <span className="text-orange-300">
+                    <Tip term="ACC" side="bottom">accolades</Tip>
+                  </span>
+                  , and{" "}
                   <span className="text-orange-300">longevity</span> so a Hall
                   of Famer always reads hot, a multi-Pro-Bowler reads warm, and
-                  a never-played bust reads cold — regardless of round or
-                  era.
+                  a never-played bust reads cold — regardless of round or era.
                 </p>
                 <pre className="mono mt-4 overflow-x-auto whitespace-pre-wrap border-l-2 border-orange-500/40 bg-navy-800/40 p-3 text-[11px] text-cream-200">
                   {FORMULA_NOTE}
@@ -124,7 +130,7 @@ export function HitScorePanel({ picks }: Props) {
                 />
                 <div className="mt-4 space-y-3">
                   <Slider
-                    label="Career AV"
+                    label={<Tip term="AV" side="bottom">Career AV</Tip>}
                     value={params.avWeight}
                     min={0}
                     max={1}
@@ -133,7 +139,7 @@ export function HitScorePanel({ picks }: Props) {
                     format={(v) => fmtMix(v, weightTotal)}
                   />
                   <Slider
-                    label="Accolades"
+                    label={<Tip term="ACC" side="bottom">Accolades</Tip>}
                     value={params.accWeight}
                     min={0}
                     max={1}
@@ -167,7 +173,7 @@ export function HitScorePanel({ picks }: Props) {
                 />
                 <div className="mt-4 space-y-3">
                   <Slider
-                    label="AV ceiling (saturates at)"
+                    label={<><Tip term="AV" side="bottom">AV</Tip>{" "}ceiling (saturates at)</>}
                     value={params.avCeiling}
                     min={20}
                     max={120}
@@ -203,7 +209,7 @@ export function HitScorePanel({ picks }: Props) {
                 />
                 <div className="mt-4 space-y-3">
                   <Slider
-                    label="Per Pro Bowl"
+                    label={<>Per <Tip term="PROBOWL" side="bottom">Pro Bowl</Tip></>}
                     value={params.pbWeight}
                     min={0}
                     max={0.25}
@@ -212,7 +218,7 @@ export function HitScorePanel({ picks }: Props) {
                     format={(v) => v.toFixed(2)}
                   />
                   <Slider
-                    label="Per All-Pro"
+                    label={<>Per <Tip term="ALLPRO" side="bottom">All-Pro</Tip></>}
                     value={params.apWeight}
                     min={0}
                     max={0.5}
@@ -221,7 +227,7 @@ export function HitScorePanel({ picks }: Props) {
                     format={(v) => v.toFixed(2)}
                   />
                   <Slider
-                    label="Hall of Fame bonus"
+                    label={<><Tip term="HOF" side="bottom">Hall of Fame</Tip>{" "}bonus</>}
                     value={params.hofBonus}
                     min={0}
                     max={1}
@@ -325,7 +331,7 @@ function Slider({
   format,
   note,
 }: {
-  label: string;
+  label: React.ReactNode;
   value: number;
   min: number;
   max: number;

@@ -6,6 +6,7 @@ import type { DraftPick } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { hitColor, hitLabel, useHitScore } from "@/lib/hit-score";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
+import { Tip, type TipTerm } from "@/components/ui/Tip";
 
 type Props = {
   pick: DraftPick;
@@ -82,9 +83,14 @@ export function DraftCard({ pick, onOpen, onCompare, inCompare }: Props) {
 
         {/* Career stats — desktop only */}
         <div className="hidden shrink-0 items-center gap-3 sm:flex sm:gap-4">
-          <Stat label="AV" value={pick.car_av ?? pick.w_av} />
-          <Stat label="GP" value={pick.games} />
-          <Stat label="Pro Bowl" value={pick.probowls} accent={(pick.probowls ?? 0) > 0} />
+          <Stat term="AV" label="AV" value={pick.car_av ?? pick.w_av} />
+          <Stat term="GP" label="GP" value={pick.games} />
+          <Stat
+            term="PB"
+            label="Pro Bowl"
+            value={pick.probowls}
+            accent={(pick.probowls ?? 0) > 0}
+          />
           <div className="ml-2 flex w-16 flex-col items-end">
             <div
               className="mono text-[10px] uppercase tracking-[0.2em]"
@@ -121,19 +127,19 @@ export function DraftCard({ pick, onOpen, onCompare, inCompare }: Props) {
       {/* Mobile-only stats row */}
       <div className="mt-2 flex items-center justify-between gap-3 pl-[60px] mono text-[10px] uppercase tracking-[0.2em] text-cream-300/70 sm:hidden">
         <span>
-          AV{" "}
+          <Tip term="AV">AV</Tip>{" "}
           <span className="display tabular text-base text-cream-100">
             {pick.car_av ?? pick.w_av ?? "—"}
           </span>
         </span>
         <span>
-          GP{" "}
+          <Tip term="GP">GP</Tip>{" "}
           <span className="display tabular text-base text-cream-100">
             {pick.games ?? "—"}
           </span>
         </span>
         <span className={cn((pick.probowls ?? 0) > 0 && "text-orange-400")}>
-          PB{" "}
+          <Tip term="PB">PB</Tip>{" "}
           <span className="display tabular text-base">
             {pick.probowls ?? 0}
           </span>
@@ -147,10 +153,12 @@ export function DraftCard({ pick, onOpen, onCompare, inCompare }: Props) {
 }
 
 function Stat({
+  term,
   label,
   value,
   accent = false,
 }: {
+  term: TipTerm;
   label: string;
   value: number | null | undefined;
   accent?: boolean;
@@ -158,7 +166,7 @@ function Stat({
   return (
     <div className="flex w-12 flex-col items-end sm:w-14">
       <div className="mono text-[9px] uppercase tracking-[0.2em] text-cream-300/50">
-        {label}
+        <Tip term={term}>{label}</Tip>
       </div>
       <div
         className={cn(
