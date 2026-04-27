@@ -154,6 +154,22 @@ export function isIncoming(pick: DraftPick, latestSeason: number): boolean {
   return pick.season >= latestSeason && pick.to == null && (pick.games ?? null) == null;
 }
 
+export type CareerStatus = "rookie" | "active" | "retired";
+
+/**
+ * Classifies a pick's career status using the `to` field (last season the
+ * player appeared in PFR). "Active" means they were on the field in the most
+ * recent completed season — close enough to "still in the NFL" for our use.
+ */
+export function careerStatus(pick: DraftPick, latestSeason: number): CareerStatus {
+  if (isIncoming(pick, latestSeason)) return "rookie";
+  // Most recent completed season is one before latestSeason (current draft year)
+  // unless the year's regular season has ended already; treat both as active.
+  const lastCompletedSeason = latestSeason - 1;
+  if ((pick.to ?? 0) >= lastCompletedSeason) return "active";
+  return "retired";
+}
+
 // ---------------------------------------------------------------------------
 // Provider + hook
 // ---------------------------------------------------------------------------

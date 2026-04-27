@@ -1,5 +1,10 @@
 import { Hero } from "@/components/Hero";
 import { ExplorerSection } from "@/components/explorer/ExplorerSection";
+import { ExplorerProvider } from "@/components/explorer/ExplorerContext";
+import { CompareDock } from "@/components/explorer/CompareDock";
+import { PlayerModal } from "@/components/explorer/PlayerModal";
+import { CompareModal } from "@/components/explorer/CompareModal";
+import { ActiveTimeline } from "@/components/ActiveTimeline";
 import { Dashboard } from "@/components/Dashboard";
 import { HitScorePanel } from "@/components/HitScorePanel";
 import { HitScoreHint } from "@/components/HitScoreHint";
@@ -11,12 +16,18 @@ export default async function Page() {
 
   return (
     <HitScoreProvider latestSeason={meta.last_season}>
-      <main className="relative">
-        <Hero meta={meta} picks={picks} />
-        <ExplorerSection picks={picks} />
-        <Dashboard picks={picks} />
-        <Footer />
-      </main>
+      <ExplorerProvider picks={picks}>
+        <main className="relative">
+          <Hero meta={meta} picks={picks} />
+          <ExplorerSection picks={picks} />
+          <ActiveTimeline picks={picks} latestSeason={meta.last_season} />
+          <Dashboard picks={picks} />
+          <Footer />
+        </main>
+        <CompareDock />
+        <PlayerModal />
+        <CompareModal />
+      </ExplorerProvider>
       <HitScorePanel picks={picks} />
       <HitScoreHint />
     </HitScoreProvider>

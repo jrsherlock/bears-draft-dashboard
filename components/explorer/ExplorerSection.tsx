@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ExplorerProvider, useExplorer } from "./ExplorerContext";
+import { useExplorer } from "./ExplorerContext";
 import { Filters } from "./Filters";
 import { Timeline } from "./Timeline";
-import { PlayerModal } from "./PlayerModal";
-import { CompareDock } from "./CompareDock";
-import { CompareModal } from "./CompareModal";
 import type { DraftPick } from "@/lib/types";
 
 type Props = {
@@ -14,17 +11,6 @@ type Props = {
 };
 
 export function ExplorerSection({ picks }: Props) {
-  return (
-    <ExplorerProvider picks={picks}>
-      <ExplorerInner picks={picks} />
-      <CompareDock />
-      <PlayerModal />
-      <CompareModal />
-    </ExplorerProvider>
-  );
-}
-
-function ExplorerInner({ picks }: Props) {
   const { filters, filtered } = useExplorer();
   const sectionRef = useRef<HTMLElement>(null);
   const filtersRef = useRef<HTMLDivElement>(null);
