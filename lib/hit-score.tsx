@@ -157,17 +157,65 @@ export function isIncoming(pick: DraftPick, latestSeason: number): boolean {
 export type CareerStatus = "rookie" | "active" | "retired";
 
 /**
- * Classifies a pick's career status using the `to` field (last season the
- * player appeared in PFR). "Active" means they were on the field in the most
- * recent completed season — close enough to "still in the NFL" for our use.
+ * Classifies a pick's career status. Prefers the empirical `roster_status`
+ * field (filled by enrich_active_status.py from Sleeper + nflverse rosters)
+ * and only falls back to the `to`-field heuristic when no roster data exists.
  */
 export function careerStatus(pick: DraftPick, latestSeason: number): CareerStatus {
+  switch (pick.roster_status) {
+    case "active":
+    case "practice_squad":
+    case "ir_or_pup":
+      // On an actual NFL roster right now per Sleeper.
+      return "active";
+    case "rookie":
+      return "rookie";
+    case "rostered_2025":
+      // Played last season but is currently a free agent — surface as
+      // retired so the timeline's "active glow" only marks players who
+      // are actually on a roster today. The modal still calls out FA
+      // status separately via rosterStatusLabel().
+      return "retired";
+    case "retired":
+      return "retired";
+  }
+
+  // Fallback when the empirical pipeline hasn't run: PFR's last-season heuristic.
   if (isIncoming(pick, latestSeason)) return "rookie";
-  // Most recent completed season is one before latestSeason (current draft year)
-  // unless the year's regular season has ended already; treat both as active.
   const lastCompletedSeason = latestSeason - 1;
   if ((pick.to ?? 0) >= lastCompletedSeason) return "active";
   return "retired";
+}
+
+/**
+ * Human-readable summary of where this player currently is — used in modals
+ * and tooltips so users can see *why* we labeled them active or retired.
+ */
+export function rosterStatusLabel(pick: DraftPick): string {
+  switch (pick.roster_status) {
+    case "active":
+      return pick.current_team
+        ? `Active · currently with ${pick.current_team}`
+        : "Active in the NFL";
+    case "practice_squad":
+      return pick.current_team
+        ? `Practice squad · ${pick.current_team}`
+        : "On a practice squad";
+    case "ir_or_pup":
+      return pick.current_team
+        ? `Reserve list · ${pick.current_team}`
+        : "On an NFL reserve list";
+    case "rostered_2025":
+      return "Played in the most recent NFL season — currently a free agent";
+    case "rookie":
+      return "Drafted this year — no NFL games yet";
+    case "retired":
+      return pick.to ? `Retired after ${pick.to}` : "Out of the NFL";
+    default:
+      // No empirical data — fall back to descriptive heuristic
+      if (!pick.to) return "Status unknown";
+      return `Last NFL season: ${pick.to}`;
+  }
 }
 
 // ---------------------------------------------------------------------------

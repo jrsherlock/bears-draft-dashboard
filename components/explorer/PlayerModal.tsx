@@ -7,7 +7,12 @@ import { useExplorer, pickKey } from "./ExplorerContext";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CombineRadar } from "@/components/CombineRadar";
 import { cn, pfrUrl, formatStatNumber } from "@/lib/utils";
-import { hitColor, hitLabel, useHitScore } from "@/lib/hit-score";
+import {
+  hitColor,
+  hitLabel,
+  rosterStatusLabel,
+  useHitScore,
+} from "@/lib/hit-score";
 import type { DraftPick } from "@/lib/types";
 
 export function PlayerModal() {
@@ -130,6 +135,20 @@ function PlayerModalBody({
               {pick.to && (
                 <span className="mono ml-3 text-cream-300/60">
                   · played through {pick.to}
+                </span>
+              )}
+            </div>
+
+            {/* Empirical "still in NFL" status */}
+            <div className="mt-4 inline-flex items-center gap-2 border-l-2 border-orange-500/50 pl-3 mono text-[11px] uppercase tracking-[0.25em] text-cream-200">
+              <RosterDot status={pick.roster_status} />
+              <span>{rosterStatusLabel(pick)}</span>
+              {pick.roster_evidence && (
+                <span
+                  className="ml-1 text-[9px] tracking-[0.2em] text-cream-300/50"
+                  title="The data source we used to determine this status"
+                >
+                  · src: {pick.roster_evidence}
                 </span>
               )}
             </div>
@@ -371,4 +390,30 @@ function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function RosterDot({ status }: { status?: DraftPick["roster_status"] }) {
+  const color =
+    status === "active"
+      ? "var(--color-orange-400)"
+      : status === "practice_squad" || status === "ir_or_pup"
+      ? "var(--color-cream-200)"
+      : status === "rostered_2025"
+      ? "var(--color-orange-500)"
+      : status === "rookie"
+      ? "var(--color-cream-200)"
+      : "rgba(244,237,218,0.35)";
+  const pulse = status === "active" || status === "rookie";
+  return (
+    <span
+      aria-hidden
+      className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+      style={{
+        background: color,
+        boxShadow: pulse
+          ? `0 0 8px ${color}`
+          : undefined,
+      }}
+    />
+  );
 }

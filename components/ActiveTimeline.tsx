@@ -3,7 +3,11 @@
 import { motion } from "motion/react";
 import { useMemo, useRef, useState } from "react";
 import type { DraftPick } from "@/lib/types";
-import { careerStatus, type CareerStatus } from "@/lib/hit-score";
+import {
+  careerStatus,
+  rosterStatusLabel,
+  type CareerStatus,
+} from "@/lib/hit-score";
 import { useExplorer } from "./explorer/ExplorerContext";
 import { PlayerAvatar } from "./PlayerAvatar";
 
@@ -104,8 +108,13 @@ export function ActiveTimeline({ picks, latestSeason }: Props) {
             </h2>
             <p className="editorial mt-4 max-w-xl text-cream-200/75">
               Each column is a draft year, top-to-bottom by pick number. Glowing
-              orange faces are still on an NFL roster as of last season; muted
-              faces have moved on; cream-pulsing faces are this year's rookies.
+              orange faces are{" "}
+              <span className="text-orange-300">
+                currently on an NFL roster
+              </span>{" "}
+              per Sleeper's daily-refreshed player directory, cross-checked
+              against last season's nflverse rosters. Cream-pulsing faces are
+              this year's rookies; muted faces have moved on.
             </p>
           </div>
 
@@ -228,7 +237,7 @@ function YearColumn({
           <button
             key={p.pick}
             onClick={() => onOpen(p)}
-            title={`${p.display_name} · R${p.round} · #${p.pick} · ${p.position ?? "?"}`}
+            title={`${p.display_name} · R${p.round} · #${p.pick} · ${p.position ?? "?"} — ${rosterStatusLabel(p)}`}
             className="group relative mb-1 flex w-full flex-col items-center"
             style={{ marginTop: i === 0 ? 0 : GAP_Y }}
           >

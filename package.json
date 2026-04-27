@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "data": "cd data-pipeline && source .venv/bin/activate && python fetch_bears_draft.py && python fetch_wikipedia_draft.py 2026 && python enrich_photos.py && python download_player_photos.py && python enrich_combine.py"
+    "data": "cd data-pipeline && source .venv/bin/activate && python fetch_bears_draft.py && python fetch_wikipedia_draft.py 2026 && python enrich_photos.py && python download_player_photos.py && python enrich_combine.py && python enrich_active_status.py"
   },
   "dependencies": {
     "next": "^16.0.0",

@@ -63,7 +63,28 @@ export type DraftPick = {
   /** Path to a self-hosted headshot under /public, e.g. "/players/AbcdEfGh01.png". */
   local_photo?: string;
   combine: CombineRecord | null;
+
+  /** NFL team abbr if currently rostered (per Sleeper), else null. */
+  current_team?: string | null;
+  /** Sleeper status: Active / Practice Squad / Injured Reserve / Suspended / etc. */
+  current_status?: string | null;
+  /**
+   * Empirical roster classification merged from Sleeper + nflverse rosters.
+   * Filled by data-pipeline/enrich_active_status.py.
+   */
+  roster_status?: RosterStatus;
+  /** Which signal produced roster_status (audit trail for UI tooltips). */
+  roster_evidence?: string;
 };
+
+export type RosterStatus =
+  | "active"
+  | "practice_squad"
+  | "ir_or_pup"
+  | "rostered_2025"
+  | "rookie"
+  | "retired"
+  | "unknown";
 
 export type CombineMetric = {
   value: number;

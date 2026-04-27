@@ -117,20 +117,29 @@ def main() -> None:
         m = find_match(p, by_gsis, by_pfr, by_name)
         if not m:
             p["photos"] = None
+            p["current_team"] = None
+            p["current_status"] = None
             continue
         urls = photo_urls_for(m)
-        if not urls:
-            p["photos"] = None
-            continue
-        p["photos"] = urls
+        p["photos"] = urls if urls else None
         p["sleeper_id"] = m.get("_sleeper_id")
         if m.get("espn_id"):
             p["espn_id"] = m["espn_id"]
-        matched += 1
-        if "espn" in urls:
-            espn_count += 1
-        if "sleeper" in urls:
-            sleeper_count += 1
+
+        # Sleeper updates current team + status daily during the season cycle.
+        # team is the NFL team abbr if rostered (anywhere), null if not.
+        # status differentiates Active / Inactive / Injured Reserve / etc.
+        team = (m.get("team") or "").strip().upper() or None
+        status = (m.get("status") or "").strip() or None
+        p["current_team"] = team
+        p["current_status"] = status
+
+        if urls:
+            matched += 1
+            if "espn" in urls:
+                espn_count += 1
+            if "sleeper" in urls:
+                sleeper_count += 1
 
     PICKS_FILE.write_text(json.dumps(picks, indent=2, default=str))
     print(
