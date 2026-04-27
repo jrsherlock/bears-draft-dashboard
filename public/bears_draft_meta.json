@@ -1,0 +1,114 @@
+{
+  "total_picks": 427,
+  "first_season": 1980,
+  "last_season": 2026,
+  "hof_count": 5,
+  "pro_bowls": 106,
+  "all_pros": 32,
+  "by_position": {
+    "LB": 49,
+    "RB": 42,
+    "G": 29,
+    "C": 11,
+    "DB": 69,
+    "WR": 55,
+    "QB": 20,
+    "TE": 19,
+    "T": 28,
+    "DT": 30,
+    "DE": 31,
+    "K": 2,
+    "P": 6,
+    "FB": 1,
+    "S": 8,
+    "OLB": 1,
+    "ILB": 2,
+    "CB": 10,
+    "OL": 9,
+    "DL": 5
+  },
+  "by_round": {
+    "1": 45,
+    "2": 51,
+    "4": 56,
+    "5": 51,
+    "6": 49,
+    "7": 56,
+    "8": 15,
+    "9": 15,
+    "10": 15,
+    "11": 15,
+    "12": 12,
+    "3": 47
+  },
+  "by_decade": {
+    "1980s": 124,
+    "1990s": 99,
+    "2000s": 87,
+    "2010s": 62,
+    "2020s": 55
+  },
+  "top_colleges": [
+    {
+      "college": "Oklahoma",
+      "count": 15
+    },
+    {
+      "college": "Notre Dame",
+      "count": 14
+    },
+    {
+      "college": "Florida",
+      "count": 14
+    },
+    {
+      "college": "Baylor",
+      "count": 10
+    },
+    {
+      "college": "Ohio St.",
+      "count": 10
+    },
+    {
+      "college": "Texas",
+      "count": 10
+    },
+    {
+      "college": "USC",
+      "count": 9
+    },
+    {
+      "college": "Texas A&M",
+      "count": 9
+    },
+    {
+      "college": "Washington",
+      "count": 9
+    },
+    {
+      "college": "Penn St.",
+      "count": 7
+    },
+    {
+      "college": "Stanford",
+      "count": 7
+    },
+    {
+      "college": "Michigan",
+      "count": 7
+    },
+    {
+      "college": "Pittsburgh",
+      "count": 7
+    },
+    {
+      "college": "Georgia",
+      "count": 7
+    },
+    {
+      "college": "Miami (FL)",
+      "count": 7
+    }
+  ],
+  "generated_at": "2026-04-27T17:52:54.250317+00:00"
+}

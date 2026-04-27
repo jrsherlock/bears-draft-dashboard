@@ -1,0 +1,21 @@
+node_modules
+.next
+out
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+.DS_Store
+
+data-pipeline/.venv
+data-pipeline/.cache
+
+# Local-only Claude Code state; .claude/launch.json IS committed.
+.claude/settings.local.json
+
+# Stray logs from other dev tooling
+excalidraw.log
+
+# /public/players/ contains downloaded ESPN headshots — commit them so the
+# deployed app doesn't depend on espncdn.com at runtime.
+__pycache__
+*.pyc

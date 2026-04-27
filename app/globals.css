@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+/* =====================================================
+   STADIUM PRESS-BOX NOIR — Bears Draft Archive
+   ===================================================== */
+
+@theme {
+  /* Colors */
+  --color-navy-900: #060d1c;
+  --color-navy-800: #0b162a;
+  --color-navy-700: #122042;
+  --color-navy-600: #1c2c54;
+  --color-navy-500: #2a3a66;
+  --color-navy-400: #3d4f7d;
+
+  --color-cream-50: #f7f1e1;
+  --color-cream-100: #f4edda;
+  --color-cream-200: #e9dfc5;
+  --color-cream-300: #d3c5a0;
+
+  --color-orange-500: #c83803;
+  --color-orange-400: #e0501a;
+  --color-orange-300: #f47733;
+
+  --color-rule: rgba(244, 237, 218, 0.14);
+  --color-rule-strong: rgba(244, 237, 218, 0.32);
+
+  --color-stat-up: #6dd99c;
+  --color-stat-flat: #c0b89a;
+  --color-stat-down: #e25e5e;
+  --color-hof: #ffd24a;
+
+  /* Fonts (loaded via next/font in layout.tsx) */
+  --font-display: var(--font-shoulders);
+  --font-serif: var(--font-fraunces);
+  --font-mono: var(--font-mono);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html, body {
+    background: var(--color-navy-900);
+    color: var(--color-cream-100);
+    font-family: var(--font-serif);
+    font-feature-settings: "ss01", "ss02", "kern";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 700px at 12% -10%, rgba(200,56,3,0.10), transparent 60%),
+      radial-gradient(900px 600px at 100% 0%, rgba(28,44,84,0.55), transparent 70%),
+      linear-gradient(180deg, var(--color-navy-900) 0%, #04080f 100%);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Halftone / grain texture overlay — printed yearbook feel. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image:
+      radial-gradient(rgba(244,237,218,0.7) 1px, transparent 1px),
+      radial-gradient(rgba(244,237,218,0.5) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+  }
+
+  /* Scoreboard scanline (subtle horizontal rules). */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.05;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 2px,
+      rgba(244, 237, 218, 0.6) 2px,
+      rgba(244, 237, 218, 0.6) 3px
+    );
+  }
+
+  ::selection {
+    background: var(--color-orange-500);
+    color: var(--color-cream-50);
+  }
+
+  /* Tabular numerals everywhere a stat appears — feels like a scoreboard. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    line-height: 0.92;
+  }
+
+  .editorial {
+    font-family: var(--font-serif);
+    font-feature-settings: "ss01", "kern", "liga";
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* =====================================================
+   Custom utility classes
+   ===================================================== */
+
+@layer utilities {
+  .rule-line {
+    border-color: var(--color-rule);
+  }
+  .rule-line-strong {
+    border-color: var(--color-rule-strong);
+  }
+  .text-shadow-cream {
+    text-shadow: 0 1px 0 rgba(244, 237, 218, 0.06);
+  }
+  .text-shadow-glow {
+    text-shadow: 0 0 24px rgba(200, 56, 3, 0.4);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--color-rule-strong);
+    background: rgba(244, 237, 218, 0.04);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    color: var(--color-cream-200);
+  }
+  .chip-hot {
+    border-color: var(--color-orange-500);
+    background: rgba(200, 56, 3, 0.12);
+    color: var(--color-orange-300);
+  }
+  .chip-hof {
+    border-color: var(--color-hof);
+    background: rgba(255, 210, 74, 0.10);
+    color: var(--color-hof);
+  }
+
+  .ticker-divider {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--color-rule-strong) 0 8px,
+      transparent 8px 16px
+    );
+  }
+
+  /* Custom scrollbar that matches the noir aesthetic */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: var(--color-navy-900);
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-navy-600);
+    border: 2px solid var(--color-navy-900);
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-orange-500);
+  }
+}
+
+/* Recharts override — match noir palette */
+.recharts-cartesian-grid line {
+  stroke: rgba(244, 237, 218, 0.08) !important;
+}
+.recharts-text {
+  fill: var(--color-cream-200) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.05em;
+}
+.recharts-tooltip-wrapper {
+  outline: none;
+}
