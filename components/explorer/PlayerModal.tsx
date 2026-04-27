@@ -5,6 +5,7 @@ import { X, ExternalLink, Plus, Check } from "lucide-react";
 import { useEffect } from "react";
 import { useExplorer, pickKey } from "./ExplorerContext";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
+import { CombineRadar } from "@/components/CombineRadar";
 import { cn, pfrUrl, formatStatNumber } from "@/lib/utils";
 import { hitColor, hitLabel, useHitScore } from "@/lib/hit-score";
 import type { DraftPick } from "@/lib/types";
@@ -202,6 +203,29 @@ function PlayerModalBody({
             value={pick.hof ? "★" : pick.probowls}
           />
         </div>
+
+        {/* Combine athleticism radar */}
+        {pick.combine && Object.keys(pick.combine.metrics).length > 0 && (
+          <div className="border-b rule-line p-6 lg:p-8">
+            <div className="mb-4 flex items-baseline justify-between gap-3">
+              <div>
+                <div className="mono text-[10px] uppercase tracking-[0.3em] text-cream-300/60">
+                  Combine athleticism
+                </div>
+                <div className="editorial mt-1 text-sm text-cream-200/70">
+                  Six-axis percentile within the {pick.combine.position_group}{" "}
+                  position group.
+                </div>
+              </div>
+              <div className="mono text-[10px] uppercase tracking-[0.25em] text-cream-300/50">
+                Source · NFL Combine
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <CombineRadar combine={pick.combine} size={320} />
+            </div>
+          </div>
+        )}
 
         {/* Position-relevant detail stats */}
         {stats.length > 0 && (

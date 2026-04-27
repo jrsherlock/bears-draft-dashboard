@@ -62,6 +62,25 @@ export type DraftPick = {
   espn_id?: string;
   /** Path to a self-hosted headshot under /public, e.g. "/players/AbcdEfGh01.png". */
   local_photo?: string;
+  combine: CombineRecord | null;
+};
+
+export type CombineMetric = {
+  value: number;
+  /** 0..1 — share of position group beaten on this metric (1.0 = best in group). */
+  percentile: number;
+  label: string;
+  lower_better: boolean;
+};
+
+export type CombineRecord = {
+  position_group: string;
+  height: number | null;
+  weight: number | null;
+  metrics: Partial<Record<
+    "forty" | "vertical" | "broad_jump" | "bench" | "cone" | "shuttle",
+    CombineMetric
+  >>;
 };
 
 export type DraftMeta = {
