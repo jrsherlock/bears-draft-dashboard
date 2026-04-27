@@ -45,3 +45,41 @@ export function pfrUrl(p: DraftPick): string | null {
   const first = p.pfr_player_id[0];
   return `https://www.pro-football-reference.com/players/${first}/${p.pfr_player_id}.htm`;
 }
+
+/** Coarse position group for charts and league-wide analysis. */
+export function positionGroup(pos: string | null | undefined): string {
+  if (!pos) return "?";
+  const p = pos.toUpperCase();
+  if (p === "QB") return "QB";
+  if (["RB", "FB", "HB"].includes(p)) return "RB";
+  if (p === "WR") return "WR";
+  if (p === "TE") return "TE";
+  if (["OT", "OG", "OC", "C", "G", "T", "OL"].includes(p)) return "OL";
+  if (["DT", "DE", "DL", "NT", "EDGE"].includes(p)) return "DL";
+  if (["LB", "ILB", "OLB", "MLB"].includes(p)) return "LB";
+  if (["CB", "S", "FS", "SS", "DB", "SAF"].includes(p)) return "DB";
+  if (["K", "P", "LS"].includes(p)) return "ST";
+  return "?";
+}
+
+export const POSITION_GROUPS = ["QB", "RB", "WR", "TE", "OL", "DL", "LB", "DB", "ST"] as const;
+
+export const POSITION_GROUP_COLORS: Record<string, string> = {
+  QB: "#e0501a", // orange-400
+  RB: "#d3c5a0", // cream-300
+  WR: "#f47733", // orange-300
+  TE: "#f4edda", // cream-100
+  OL: "#5a6478", // cool muted
+  DL: "#c83803", // orange-500 (defense gets the warmest tones — Bears are Monsters of the Midway)
+  LB: "#7e2200", // deep orange/rust
+  DB: "#3d4f7d", // navy-400
+  ST: "rgba(244,237,218,0.35)", // dim cream
+};
+
+/** Defines whether a position group is offense, defense, or special teams. */
+export function unitFor(group: string): "offense" | "defense" | "st" | "?" {
+  if (["QB", "RB", "WR", "TE", "OL"].includes(group)) return "offense";
+  if (["DL", "LB", "DB"].includes(group)) return "defense";
+  if (group === "ST") return "st";
+  return "?";
+}
