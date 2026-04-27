@@ -22,6 +22,8 @@ const FORMULA_NOTE = `raw = (av·wAV + acc·wACC + gp·wGP) / Σweights · 100`;
 export function HitScorePanel({ picks }: Props) {
   const { params, setParam, reset, isCustom, panelOpen, closePanel, score } =
     useHitScore();
+  const weightTotal =
+    params.avWeight + params.accWeight + params.gpWeight || 1;
 
   useEffect(() => {
     if (!panelOpen) return;
@@ -118,7 +120,7 @@ export function HitScorePanel({ picks }: Props) {
                 <SectionTitle
                   number="01"
                   title="Component weights"
-                  hint="How much each bucket contributes (auto-normalized)"
+                  hint="How much each bucket contributes — always sums to 100%"
                 />
                 <div className="mt-4 space-y-3">
                   <Slider
@@ -128,7 +130,7 @@ export function HitScorePanel({ picks }: Props) {
                     max={1}
                     step={0.05}
                     onChange={(v) => setParam("avWeight", v)}
-                    format={(v) => `${Math.round(v * 100)}%`}
+                    format={(v) => fmtMix(v, weightTotal)}
                   />
                   <Slider
                     label="Accolades"
@@ -137,7 +139,7 @@ export function HitScorePanel({ picks }: Props) {
                     max={1}
                     step={0.05}
                     onChange={(v) => setParam("accWeight", v)}
-                    format={(v) => `${Math.round(v * 100)}%`}
+                    format={(v) => fmtMix(v, weightTotal)}
                   />
                   <Slider
                     label="Longevity"
@@ -146,7 +148,7 @@ export function HitScorePanel({ picks }: Props) {
                     max={1}
                     step={0.05}
                     onChange={(v) => setParam("gpWeight", v)}
-                    format={(v) => `${Math.round(v * 100)}%`}
+                    format={(v) => fmtMix(v, weightTotal)}
                   />
                 </div>
                 <WeightBar
@@ -388,42 +390,39 @@ function Slider({
 
 function WeightBar({ av, acc, gp }: { av: number; acc: number; gp: number }) {
   const total = av + acc + gp || 1;
+  const avPct = Math.round((av / total) * 100);
+  const accPct = Math.round((acc / total) * 100);
+  const gpPct = Math.round((gp / total) * 100);
   return (
     <div className="mt-4">
-      <div className="mono mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.25em] text-cream-300/60">
-        <span>Mix</span>
-        <span>{Math.round(total * 100)}% raw</span>
+      <div className="mono mb-1 text-[10px] uppercase tracking-[0.25em] text-cream-300/60">
+        Mix
       </div>
       <div className="flex h-3 overflow-hidden border rule-line">
         <div
-          style={{
-            width: `${(av / total) * 100}%`,
-            background: "var(--color-orange-500)",
-          }}
-          title={`AV ${Math.round((av / total) * 100)}%`}
+          style={{ width: `${avPct}%`, background: "var(--color-orange-500)" }}
+          title={`AV ${avPct}%`}
         />
         <div
-          style={{
-            width: `${(acc / total) * 100}%`,
-            background: "var(--color-cream-200)",
-          }}
-          title={`Acc ${Math.round((acc / total) * 100)}%`}
+          style={{ width: `${accPct}%`, background: "var(--color-cream-200)" }}
+          title={`Accolades ${accPct}%`}
         />
         <div
-          style={{
-            width: `${(gp / total) * 100}%`,
-            background: "var(--color-navy-400)",
-          }}
-          title={`GP ${Math.round((gp / total) * 100)}%`}
+          style={{ width: `${gpPct}%`, background: "var(--color-navy-400)" }}
+          title={`Longevity ${gpPct}%`}
         />
       </div>
       <div className="mono mt-1 flex justify-between text-[10px] uppercase tracking-[0.2em] text-cream-300/60">
-        <Legend color="var(--color-orange-500)">AV</Legend>
-        <Legend color="var(--color-cream-200)">Acc</Legend>
-        <Legend color="var(--color-navy-400)">GP</Legend>
+        <Legend color="var(--color-orange-500)">AV {avPct}%</Legend>
+        <Legend color="var(--color-cream-200)">Acc {accPct}%</Legend>
+        <Legend color="var(--color-navy-400)">GP {gpPct}%</Legend>
       </div>
     </div>
   );
+}
+
+function fmtMix(value: number, total: number): string {
+  return `${Math.round((value / total) * 100)}%`;
 }
 
 function Legend({
