@@ -159,6 +159,7 @@ export function isIncoming(pick: DraftPick, latestSeason: number): boolean {
 // ---------------------------------------------------------------------------
 
 const STORAGE_KEY = "bears-draft.hit-score-params.v1";
+const HINT_KEY = "bears-draft.hit-score-hint-seen.v1";
 
 type Ctx = {
   params: HitScoreParams;
@@ -176,6 +177,9 @@ type Ctx = {
   isIncoming: (pick: DraftPick) => boolean;
   /** Latest season represented in the dataset. */
   latestSeason: number;
+  /** Has the user seen the "this is configurable" hint yet? */
+  hintSeen: boolean;
+  markHintSeen: () => void;
 };
 
 const HitScoreCtx = createContext<Ctx | null>(null);
@@ -197,6 +201,7 @@ export function HitScoreProvider({
   const [params, setParamsState] = useState<HitScoreParams>(DEFAULT_PARAMS);
   const [panelOpen, setPanelOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [hintSeen, setHintSeen] = useState(true); // assume seen until hydrated to avoid SSR flash
 
   // Load from localStorage on mount.
   useEffect(() => {
@@ -206,6 +211,7 @@ export function HitScoreProvider({
         const parsed = JSON.parse(raw) as Partial<HitScoreParams>;
         setParamsState({ ...DEFAULT_PARAMS, ...parsed });
       }
+      setHintSeen(localStorage.getItem(HINT_KEY) === "1");
     } catch {
       /* ignore */
     }
@@ -244,6 +250,15 @@ export function HitScoreProvider({
     [latestSeason]
   );
 
+  const markHintSeen = useCallback(() => {
+    setHintSeen(true);
+    try {
+      localStorage.setItem(HINT_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const value = useMemo<Ctx>(
     () => ({
       params,
@@ -252,14 +267,34 @@ export function HitScoreProvider({
       reset,
       isCustom: !paramsEqual(params, DEFAULT_PARAMS),
       panelOpen,
-      openPanel: () => setPanelOpen(true),
+      openPanel: () => {
+        setPanelOpen(true);
+        if (!hintSeen) {
+          setHintSeen(true);
+          try {
+            localStorage.setItem(HINT_KEY, "1");
+          } catch {}
+        }
+      },
       closePanel: () => setPanelOpen(false),
       togglePanel: () => setPanelOpen((v) => !v),
       score,
       isIncoming: incoming,
       latestSeason,
+      hintSeen,
+      markHintSeen,
     }),
-    [params, setParam, reset, panelOpen, score, incoming, latestSeason]
+    [
+      params,
+      setParam,
+      reset,
+      panelOpen,
+      score,
+      incoming,
+      latestSeason,
+      hintSeen,
+      markHintSeen,
+    ]
   );
 
   return <HitScoreCtx.Provider value={value}>{children}</HitScoreCtx.Provider>;

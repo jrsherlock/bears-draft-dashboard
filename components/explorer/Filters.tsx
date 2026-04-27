@@ -14,7 +14,12 @@ type Props = {
 
 export function Filters({ picks }: Props) {
   const { filters, setSearch, toggle, clearAll, filtered } = useExplorer();
-  const { isCustom: hitScoreCustom, openPanel: openHitScorePanel } = useHitScore();
+  const {
+    isCustom: hitScoreCustom,
+    openPanel: openHitScorePanel,
+    hintSeen,
+  } = useHitScore();
+  const showHint = !hintSeen && !hitScoreCustom;
 
   const decades = useMemo(
     () => Array.from(new Set(picks.map((p) => p.decade))).sort(),
@@ -75,22 +80,65 @@ export function Filters({ picks }: Props) {
         <div className="mono text-[11px] uppercase tracking-[0.3em] text-cream-300/70">
           Filters
         </div>
-        <button
-          onClick={openHitScorePanel}
-          className={cn(
-            "mono inline-flex items-center gap-1.5 border px-2 py-1 text-[10px] uppercase tracking-[0.2em] transition",
-            hitScoreCustom
-              ? "border-orange-500 bg-orange-500/15 text-orange-300"
-              : "rule-line-strong text-cream-200 hover:border-cream-100 hover:text-cream-50"
-          )}
-          aria-label="Open hit-score methodology panel"
-        >
-          <Sliders size={11} />
-          Hit score · {hitScoreCustom ? "Custom" : "Default"}
-          {hitScoreCustom && (
-            <span className="ml-0.5 inline-block h-1.5 w-1.5 rounded-full bg-orange-400" />
-          )}
-        </button>
+        <div className="group/hit relative">
+          <button
+            onClick={openHitScorePanel}
+            className={cn(
+              "mono relative inline-flex items-center gap-1.5 border px-2 py-1 text-[10px] uppercase tracking-[0.2em] transition",
+              hitScoreCustom
+                ? "border-orange-500 bg-orange-500/15 text-orange-300"
+                : "rule-line-strong text-cream-200 hover:border-cream-100 hover:text-cream-50",
+              showHint && "hit-score-pulse"
+            )}
+            aria-label="Open hit-score methodology panel"
+          >
+            <Sliders size={11} />
+            Hit score · {hitScoreCustom ? "Custom" : "Default"}
+            {hitScoreCustom ? (
+              <span className="ml-0.5 inline-block h-1.5 w-1.5 rounded-full bg-orange-400" />
+            ) : (
+              <span className="ml-0.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full border border-rule-strong text-[8px] tracking-normal text-cream-300/70">
+                ?
+              </span>
+            )}
+          </button>
+
+          {/* Hover tooltip — always available, shows on hover */}
+          <div
+            role="tooltip"
+            className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-64 -translate-x-1/2 border rule-line-strong bg-navy-900 p-3 opacity-0 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover/hit:opacity-100"
+          >
+            <div className="mono mb-1 text-[10px] uppercase tracking-[0.25em] text-orange-400">
+              Hit Score
+            </div>
+            <p className="editorial text-xs leading-snug text-cream-200/90">
+              A 0–100 quality rating per pick, blending career AV, accolades,
+              and longevity.
+            </p>
+            <div className="mono mt-2 text-[9px] uppercase tracking-[0.25em] text-cream-300/70">
+              Click to see the formula and tune it
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes hitscore-pulse {
+            0%, 100% {
+              box-shadow:
+                0 0 0 0 rgba(200, 56, 3, 0.0),
+                0 0 0 0 rgba(200, 56, 3, 0.0);
+            }
+            40% {
+              box-shadow:
+                0 0 0 4px rgba(200, 56, 3, 0.18),
+                0 0 14px 4px rgba(200, 56, 3, 0.35);
+            }
+          }
+          :global(.hit-score-pulse) {
+            animation: hitscore-pulse 2.4s ease-in-out infinite;
+            border-color: var(--color-orange-500) !important;
+          }
+        `}</style>
         <div className="ml-auto mono text-xs text-cream-200/80">
           <span className="display tabular text-2xl text-orange-400">
             {filtered.length}

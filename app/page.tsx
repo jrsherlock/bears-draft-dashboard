@@ -2,6 +2,7 @@ import { Hero } from "@/components/Hero";
 import { ExplorerSection } from "@/components/explorer/ExplorerSection";
 import { Dashboard } from "@/components/Dashboard";
 import { HitScorePanel } from "@/components/HitScorePanel";
+import { HitScoreHint } from "@/components/HitScoreHint";
 import { HitScoreProvider } from "@/lib/hit-score";
 import { loadMeta, loadPicks } from "@/lib/data";
 
@@ -17,6 +18,7 @@ export default async function Page() {
         <Footer />
       </main>
       <HitScorePanel picks={picks} />
+      <HitScoreHint />
     </HitScoreProvider>
   );
 }
