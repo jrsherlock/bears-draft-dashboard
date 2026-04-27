@@ -208,7 +208,9 @@ export function rosterStatusLabel(pick: DraftPick): string {
     case "rostered_2025":
       return "Played in the most recent NFL season — currently a free agent";
     case "rookie":
-      return "Drafted this year — no NFL games yet";
+      return pick.current_team
+        ? `Rookie · signed with ${pick.current_team}, no NFL games yet`
+        : "Rookie · drafted this year, no NFL games yet";
     case "retired":
       return pick.to ? `Retired after ${pick.to}` : "Out of the NFL";
     default:

@@ -102,16 +102,18 @@ def main() -> None:
         sleeper_team = p.get("current_team")
         sleeper_status = p.get("current_status")
 
-        # 2026 rookies — overwrite to "rookie" unless Sleeper actually shows them on a team.
+        # Most-recent-draft-year picks who haven't played a snap are *rookies*,
+        # full stop — even if Sleeper already shows them signed to a team.
+        # "Rookie" describes a career stage; the sleeper team assignment is a
+        # secondary fact captured separately in current_team / current_status.
         if season >= latest_season and not p.get("games") and (p.get("to") is None):
-            sleeper_kind = status_from_sleeper(sleeper_team, sleeper_status)
-            if sleeper_kind:
-                p["roster_status"] = sleeper_kind
-                p["roster_evidence"] = "sleeper"
-            else:
-                p["roster_status"] = "rookie"
-                p["roster_evidence"] = "draft_year"
-            counts[p["roster_status"]] += 1
+            p["roster_status"] = "rookie"
+            p["roster_evidence"] = (
+                "sleeper+draft_year"
+                if status_from_sleeper(sleeper_team, sleeper_status)
+                else "draft_year"
+            )
+            counts["rookie"] += 1
             continue
 
         sleeper_kind = status_from_sleeper(sleeper_team, sleeper_status)
